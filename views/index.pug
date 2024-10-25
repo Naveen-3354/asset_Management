@@ -1,0 +1,21 @@
+doctype html
+html(lang="en")
+  head
+    title Asset Management Dashboard
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+    script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js")
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+  body
+    .container-fluid
+      // Include Navbar
+      include components/navbar.pug
+
+      // Dashboard Overview
+      .row.mt-4
+        .col-md-12
+          h1 Dashboard
+          p Welcome to your asset management dashboard. Navigate through the sections to manage your assets effectively.
+
+      // Include Footer
+      include components/footer.pug

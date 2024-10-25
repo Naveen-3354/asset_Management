@@ -1,0 +1,36 @@
+include index
+
+block content
+  .container
+    div.d-flex.justify-content-between
+      h1= title + ' New Employee'
+      a(href='/employees', style='height:fit-content')
+        button(class='btn btn-primary')
+          i(class="bi bi-arrow-left") Back
+    form(action=title=="Create" ?"/employees":`/employees/${employee.id}/edit`, method="POST")
+      .form-group
+        label(for="firstName") First Name
+        input#firstName.form-control(type="text" name="firstName" value=employee ? employee.firstName:"" required)
+      .form-group
+        label(for="lastName") Last Name
+        input#lastName.form-control(type="text" name="lastName" value=employee ? employee.lastName:"" required)
+      .form-group
+        label(for="email") Email
+        input#email.form-control(type="email" name="email" value=employee ? employee.email:"" required)
+      .form-group
+        label(for="phoneNumber") Phone Number
+        input#phoneNumber.form-control(type="text" name="phoneNumber" value=employee ? employee.phoneNumber:"" required)
+      .form-group
+        label(for="department") Department
+        input#department.form-control(type="text" name="department" value=employee ? employee.department:"" required)
+      .form-group
+        label(for="position") Position
+        input#position.form-control(type="text" name="position" value=employee ? employee.position:"" required)
+      .form-group
+        label(for="status") Status
+        select#status.form-control(name="status")
+          option(value="Active" selected=employee ?employee.status === 'Active':"") Active
+          option(value="Inactive" selected=employee? employee.status === 'Inactive':"") Inactive
+      button.btn.btn-primary(type="submit")=title=="Create" ? "Submit":"Update Changes"
+
+include ../components/footer.pug

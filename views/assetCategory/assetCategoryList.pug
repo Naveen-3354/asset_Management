@@ -1,0 +1,45 @@
+include index.pug 
+
+block content
+    .container-fluid
+        .row.mt-4(style="width: 80%; margin: 0 auto;")
+            .col-md-12
+                div.d-flex.justify-content-between
+                    h2 AssetCategory List
+                    a(href='/assetCategory/create',class='btn btn-primary', style='height:fit-content') Add New
+                table.table.table-striped#assetCategoryTable
+                    thead
+                        tr
+                            th ID
+                            th Name
+                            th Description
+                            th Status
+                            th Actions
+                    tbody
+                        each assetCategory in assetCategories
+                            tr
+                                td= assetCategory.id
+                                td= assetCategory.name
+                                td= assetCategory.description
+                                td= assetCategory.status
+                                td(style='display:flex; gap:10px')
+                                    a(href=`/assetCategory/edit/${assetCategory.id}`,class='btn btn-primary') 
+                                        i.bi.bi-pencil-square.d-flex.align-items-center.gap-2 Edit
+                                    form(action=`/assetCategory/${assetCategory.id}/delete`, method='POST', style='display:inline')
+                                        button(type='submit', class='btn btn-danger') 
+                                            i.bi.bi-trash Delete
+                    tfooter
+                        tr 
+                            th ID
+                            th Name
+                            th Description
+                            th Status
+                            th Actions
+        
+
+script.
+    $(document).ready(function() {
+        $('#assetCategoryTable').DataTable();
+    });
+
+include ../components/footer.pug

@@ -1,0 +1,86 @@
+include index.pug 
+
+block content
+    .container-fluid
+        .row.mt-4(style="width: 80%; margin: 0 auto;")
+            .col-md-12
+                div.d-flex.justify-content-between
+                    h2 Assets List
+                    a(href='/assets/create',class='btn btn-primary', style='height:fit-content') Add New
+                table.table.table-striped#assetsTable
+                    thead
+                        tr
+                            th ID
+                            th Serial Number
+                            th Make
+                            th Model
+                            th Available
+                            th CategoryId
+                            th Status
+                            th Actions
+                    tbody
+                        each asset in assets
+                            tr
+                                td= asset.id
+                                td= asset.serialNumber
+                                td= asset.make
+                                td= asset.model
+                                td= asset.totalStock
+                                td= asset.categoryId
+                                td= asset.status
+                                td(style='display:flex; gap:10px')
+                                    //- buttom(type="button" class="btn btn-dark view-btn" data-asset=asset data-bs-toggle="modal" data-bs-target="#asset") View
+                                    a(href=`/assets/view/${asset.id}`,class='btn btn-dark') 
+                                        i.bi.bi-pencil-square.d-flex.align-items-center.gap-2 View
+                                    a(href=`/assets/edit/${asset.id}`,class='btn btn-primary') 
+                                        i.bi.bi-pencil-square.d-flex.align-items-center.gap-2 Edit
+                                    form(action=`/assets/${asset.id}/delete`, method='POST', style='display:inline')
+                                        button(type='submit', class='btn btn-danger') 
+                                            i.bi.bi-trash Delete
+                    tfooter
+                        tr 
+                            th ID
+                            th Serial Number
+                            th Make
+                            th Model
+                            th Stock
+                            th CategoryId
+                            th Status
+                            th Actions
+        div(class="modal fade" id="asset" tabindex="-1" aria-labelledby="assetLabel" aria-hidden="true")
+            div(class="modal-dialog modal-dialog-centered")
+                div(class="modal-content")
+                    div(class="modal-header")
+                        h2(class="modal-title fs-5" id="exampleModalLabel") Asset
+                        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+                    .modal-body
+                        .d-flex.justify-content-between.p-2
+                            p#assetDetails
+                    
+                    div(class="modal-footer")
+                        button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Close 
+                    
+
+script.
+    $(document).ready(function() {
+        $('#assetsTable').DataTable();
+        // Event listener for view button
+        $('.view-btn').on('click',async function() {
+            const make = $(this).data('asset')['make'].split(" ")[0];
+            const initial = make.charAt(0).toUpperCase();
+            const details = `
+                <strong>ID:</strong> ${$(this).data('asset')['id']}<br>
+                <strong>Serial Number:</strong> ${$(this).data('asset')['serialNumber']}<br>
+                <strong>Make:</strong> ${$(this).data('asset')['make']}<br>
+                <strong>Model:</strong> ${$(this).data('asset')['model']}<br>
+                <strong>Stock:</strong> ${$(this).data('asset')['stock']}<br>
+                <strong>Category Id:</strong> ${$(this).data('asset')['categoryId']}<br>
+                <strong>Purchase Date:</strong> ${new Date($(this).data('asset')['purchaseDate']).toISOString().split('T')[0]}<br>
+                <strong>Warranty Expiry Date:</strong> ${new Date($(this).data('asset')['warrantyExpiryDate']).toISOString().split('T')[0]}<br>
+                <strong>Status:</strong> ${$(this).data('asset')['status']}<br>
+            `;
+            $('#assetDetails').html(details);
+        }); 
+    });
+
+include ../components/footer.pug

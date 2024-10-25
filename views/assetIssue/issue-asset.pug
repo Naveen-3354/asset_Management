@@ -1,0 +1,58 @@
+include index
+
+- var uniqueDepartments = Array.from(new Set(employees.map(emp => emp.department)))
+
+block content
+    .container
+        div.d-flex.justify-content-between
+            h1 Issue Asset
+            a(href='/assetIssue', style='height:fit-content')
+                button(class='btn btn-primary')
+                    i(class="bi bi-arrow-left") Back
+        div
+            form(action='/assetIssue/create', method='POST')
+                div.d-flex.justify-content-between
+                    div.flex-1
+                        h3 Select Employee
+                        .form-group.d-flex.align-items-center.gap-3                        
+                            select(class="form-select" id='department-select' name="employeeId" aria-label="Default select example")
+                                option(value="") -- Select Employee --
+                                each employee in employees
+                                    option(value=employee.id)= employee.firstName + ' ' + employee.lastName
+                    div.flex-1
+                        h3 Select Asset
+                        .form-group.d-flex.align-items-center.gap-3
+                            select(class="form-select" id='asset-select' name="assetId" aria-label="Default select example")
+                                option(value="") -- Select Asset --
+                                each asset in assets
+                                    option(value=asset.id)= asset.model
+                .form-group
+                    label(for="issueDate") Issue Date
+                    input#issueDate.form-control(type="date" name="issueDate" required)
+                
+                .form-group
+                    label(for="returnDate") Return Date
+                    input#returnDate.form-control(type="date" name="returnDate" required)
+                    
+                .form-group
+                    div.form-floating
+                        textarea(class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" name="notes")
+                        label(for="floatingTextarea2") Notes
+                        
+                button.btn.btn-primary(type="submit") Issue
+
+script.
+    var selectedDepartment = null
+    document.getElementById('department-select').addEventListener('change', function() {
+        var selectedDepartment = this.value;
+        var employeeItems = document.querySelectorAll('.employee-item');
+
+        employeeItems.forEach(function(item) {
+            if (selectedDepartment === '' || item.getAttribute('data-department') === selectedDepartment) {
+                item.style.display = 'list-item';
+        } else {
+            item.style.display = 'none';
+        }
+        });
+    });
+include ../components/footer.pug

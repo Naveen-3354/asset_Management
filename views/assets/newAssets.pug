@@ -1,0 +1,39 @@
+include index
+
+block content
+  .container
+    div.d-flex.justify-content-between
+      h1= title + ' New Asset'
+      a(href='/assets', style='height:fit-content')
+        button(class='btn btn-primary')
+          i(class="bi bi-arrow-left") Back
+    form(action=title=="Create" ?"/assets":`/assets/${assets.id}/edit`, method="POST")
+      .form-group
+        label(for="serialNumber") Serial Number
+        input#serialNumber.form-control(type="text" name="serialNumber" value=assets ? assets.serialNumber:"" required)
+      .form-group
+        label(for="make") Make
+        input#make.form-control(type="text" name="make" value=assets ? assets.make:"" required)
+      .form-group
+        label(for="model") Model
+        input#model.form-control(type="text" name="model" value=assets ? assets.model:"" required)
+      .form-group
+        label(for="stock") Stock
+        input#stock.form-control(type="text" name="stock" value=assets ? assets.stock:"" required)
+      .form-group
+        label(for="categoryId") Category Id
+        input#categoryId.form-control(type="text" name="categoryId" value=assets ? assets.categoryId:"" required)
+      .form-group
+        label(for="purchaseDate") Purchase Date
+        input#purchaseDate.form-control(type="date" name="purchaseDate" value=assets ? new Date(assets.purchaseDate).toISOString().split('T')[0] :"" required)
+      .form-group
+        label(for="warrantyExpiryDate") Warranty Expiry Date
+        input#warrantyExpiryDate.form-control(type="date" name="warrantyExpiryDate" value=assets ? new Date(assets.warrantyExpiryDate).toISOString().split('T')[0] :"" required)
+      .form-group
+        label(for="status") Status
+        select#status.form-control(name="status")
+          option(value="Active" selected=assets ?assets.status === 'Active':"") Active
+          option(value="Inactive" selected=assets? assets.status === 'Inactive':"") Inactive
+      button.btn.btn-primary(type="submit")=title=="Create" ? "Submit":"Update Changes"
+
+include ../components/footer.pug

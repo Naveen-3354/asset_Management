@@ -1,0 +1,105 @@
+include index.pug 
+
+block content
+    .container-fluid
+        .row.mt-4(style="width: 80%; margin: 0 auto;")
+            .col-md-12
+                div.d-flex.justify-content-between
+                    if title=== "issue"
+                        h2= "Asset Issue List"
+                        a(href='/assetIssue/issue',class='btn btn-primary', style='height:fit-content')= "Issue New"
+                    if title=== "return"
+                        h2= "Return List"
+                    if title=== "scrap"
+                        h2= "Scrap List"
+                table.table.table-striped#assetIssueTable
+                    thead
+                        tr
+                            th ID
+                            th Employee First Name
+                            th Employee Last Name
+                            th Employee Department
+                            th Asset Serial Number
+                            th Asset Model
+                            th Issue Date
+                            if title!== "issue"
+                                th="Return Date"
+                            if title=== "issue"
+                                th Actions
+                            
+                    tbody
+                        each assetIssue in assetIssues
+                            tr
+                                td= assetIssue.id
+                                td= employees.filter(employee => employee.id=== assetIssue.employeeId)[0].firstName
+                                td= employees.filter(employee => employee.id=== assetIssue.employeeId)[0].lastName
+                                td= employees.filter(employee => employee.id=== assetIssue.employeeId)[0].department
+                                td= assets.filter(asset => asset.id=== assetIssue.assetId)[0].serialNumber
+                                td= assets.filter(asset => asset.id=== assetIssue.assetId)[0].model
+                                td= new Date(assetIssue.issueDate).toISOString().split('T')[0]
+                                if title!== "issue"
+                                    td= new Date(assetIssue.returnDate).toISOString().split('T')[0]
+                                if title=== "issue"
+                                    td(style='display:flex; gap:10px')
+                                        buttom(type="button", class="btn btn-secondary view-btn",
+                                            data-data=assetIssue,
+                                            data-assetid=`${assets.filter(asset => asset.id=== assetIssue.assetId)[0]["id"]}`,
+                                            data-serialnumber=`${assets.filter(asset => asset.id=== assetIssue.assetId)[0]["serialNumber"]}`,
+                                            data-make=`${assets.filter(asset => asset.id=== assetIssue.assetId)[0]["make"]}`,
+                                            data-model=`${assets.filter(asset => asset.id=== assetIssue.assetId)[0]["model"]}`,
+                                            data-returndate=`${new Date(assetIssue.returnDate).toISOString().split('T')[0]}`,
+                                            data-employee=`${employees.filter(employee => employee.id=== assetIssue.employeeId)[0].firstName+" "+employees.filter(employee => employee.id=== assetIssue.employeeId)[0].lastName}`, data-bs-toggle="modal", data-bs-target="#exampleModal", data-department=`${employees.filter(employee => employee.id=== assetIssue.employeeId)[0].department}`) Return / Scrap
+                                    
+                        tr 
+                            th ID
+                            th Employee First Name
+                            th Employee Last Name
+                            th Employee Department
+                            th Asset Serial Number
+                            th Asset Model
+                            th Issue Date
+                            if title!== "issue"
+                                th="Return Date"
+                            if title=== "issue"
+                                th Actions
+
+        div(class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true")
+            div(class="modal-dialog modal-dialog-centered")
+                div(class="modal-content")
+                    div(class="modal-header")
+                        h2(class="modal-title fs-5" id="exampleModalLabel") Action Status
+                        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+                    .modal-body
+                        .d-flex.justify-content-between.p-2
+                            p#employeeDetails
+                    
+                    div(class="modal-footer")
+                        a(href=``,class='btn btn-primary') 
+                                        i.bi.bi-pencil-square.d-flex.align-items-center.gap-2 Edit
+
+
+script.
+    $(document).ready(function() {
+        $('#assetIssueTable').DataTable();
+
+        $('.view-btn').on('click', function() {
+            const details = `
+                <strong>Return ID:</strong> ${$(this).data('data')['id']}<br>
+                <strong>Employee Name:</strong> ${$(this).data('employee')}<br>
+                <strong>Department:</strong> ${$(this).data('department')}<br>
+                <strong>Asset ID:</strong> ${$(this).data('assetid')}<br>
+                <strong>Serial Number:</strong> ${$(this).data('serialnumber')}<br>
+                <strong>Make:</strong> ${$(this).data('make')}<br>
+                <strong>Model:</strong> ${$(this).data('model')}<br>
+                <strong>Return date:</strong> ${$(this).data('returndate')}<br>
+                <strong>Return notes:</strong> ${$(this).data('data')['notes']}<br>
+                <div style="display:fles;justify-content:end">
+                    <a href=`/assetIssue/return/${a}` class="btn btn-danger p-1"> Return </a>
+                    <a href=`/assetIssue/scrap/${a}` class="btn btn-warning p-1"> Scrap </a>
+                </div>
+            `;
+            $('#employeeDetails').html(details);
+        }); 
+    });
+
+include ../components/footer.pug

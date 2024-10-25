@@ -1,0 +1,24 @@
+include index
+
+block content
+  .container
+    div.d-flex.justify-content-between
+      h1= title + ' New Category'
+      a(href='/assetCategory', style='height:fit-content')
+        button(class='btn btn-primary')
+          i(class="bi bi-arrow-left") Back
+    form(action=title=="Create" ?"/assetCategory":`/assetCategory/${assetCategory.id}/edit`, method="POST")
+      .form-group
+        label(for="name") Name
+        input#name.form-control(type="text" name="name" value=assetCategory ? assetCategory.name:"" required)
+      .form-group
+        label(for="description") Description 
+        input#description.form-control(type="text" name="description" value=assetCategory ? assetCategory.description:"" required)
+      .form-group
+        label(for="status") Status
+        select#status.form-control(name="status")
+          option(value="Active" selected=assetCategory ?assetCategory.status === 'Active':"") Active
+          option(value="Inactive" selected=assetCategory? assetCategory.status === 'Inactive':"") Inactive
+      button.btn.btn-primary(type="submit")=title=="Create" ? "Submit":"Update Changes"
+
+include ../components/footer.pug

@@ -1,0 +1,82 @@
+include index.pug 
+
+block content
+    .container-fluid
+        .row.mt-4(style="width: 80%; margin: 0 auto;")
+            .col-md-12
+                div.d-flex.justify-content-between
+                    h2 Employee List
+                    a(href='/employees/create',class='btn btn-primary', style='height:fit-content') Add New
+                table.table.table-striped#employeeTable
+                    thead
+                        tr
+                            th ID
+                            th Name
+                            th Email    
+                            th Department
+                            th Position
+                            th Status
+                            th Actions
+                    tbody
+                        each employee in employees
+                            tr
+                                td= employee.id
+                                td= employee.firstName +" "+ employee.lastName
+                                td= employee.email
+                                td= employee.department
+                                td= employee.position
+                                td= employee.status
+                                td(style='display:flex; gap:10px')
+                                    buttom(type="button" class="btn btn-dark view-btn" data-employee=employee data-bs-toggle="modal" data-bs-target="#exampleModal") View
+                                    a(href=`/employees/edit/${employee.id}`,class='btn btn-primary') 
+                                        i.bi.bi-pencil-square.d-flex.align-items-center.gap-2 Edit
+                                    form(action=`/employees/${employee.id}/delete`, method='POST', style='display:inline')
+                                        button(type='submit', class='btn btn-danger') 
+                                            i.bi.bi-trash Delete
+                    tfooter
+                        tr 
+                            th ID
+                            th Name
+                            th Email    
+                            th Department
+                            th Position
+                            th Status
+                            th Actions
+        div(class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true")
+            div(class="modal-dialog modal-dialog-centered")
+                div(class="modal-content")
+                    div(class="modal-header")
+                        h2(class="modal-title fs-5" id="exampleModalLabel") Employee
+                        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+                    .modal-body
+                        .d-flex.justify-content-between.p-2
+                            p#employeeDetails
+                            p#employeeInitial.d-flex.justify-content-center.align-items-center(style="font-size: 3rem; font-weight: bold; margin-right: 20px;background-color:gray; border-radius:50%; height:100px; width:100px;")
+                    
+                    div(class="modal-footer")
+                        button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Close 
+                    
+
+script.
+    $(document).ready(function() {
+        $('#employeeTable').DataTable();
+        // Event listener for view button
+        $('.view-btn').on('click', function() {
+            const firstName = $(this).data('employee')['firstName'].split(" ")[0];
+            const lastName = $(this).data('employee')['lastName'].split(" ")[0];
+            const initial = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+            const details = `
+                <strong>ID:</strong> ${$(this).data('employee')['id']}<br>
+                <strong>Firstname:</strong> ${$(this).data('employee')['firstName']}<br>
+                <strong>Lastname:</strong> ${$(this).data('employee')['lastName']}<br>
+                <strong>Email:</strong> ${$(this).data('employee')['email']}<br>
+                <strong>Department:</strong> ${$(this).data('employee')['department']}<br>
+                <strong>Position:</strong> ${$(this).data('employee')['position']}<br>
+                <strong>Status:</strong> ${$(this).data('employee')['status']}
+            `;
+            $('#employeeDetails').html(details);
+            $('#employeeInitial').text(initial);
+        }); 
+    });
+
+include ../components/footer.pug

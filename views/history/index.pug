@@ -1,0 +1,109 @@
+doctype html
+html(lang="en")
+  head
+    title Asset Management History
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+    script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js")
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    script(src="https://code.jquery.com/jquery-3.7.1.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js")
+    script(src="https://cdn.datatables.net/2.1.8/js/dataTables.js")
+    script(src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css")
+    link(rel="stylesheet", href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css")
+  body
+    .container-fluid
+        include ../components/navbar.pug 
+        
+    .container-fluid
+        .row.mt-4(style="width: 80%; margin: 0 auto;")
+            .col-md-12
+                div.d-flex.justify-content-between
+                    h2 History List
+                table.table.table-striped#assetIssueTable
+                    thead
+                        tr
+                            th ID
+                            th Employee First Name
+                            th Employee Last Name
+                            th Employee Department
+                            th Asset Serial Number
+                            th Asset Model
+                            th Issue Date
+                            th Retun Date
+                            th Status
+                            th Actions
+                            
+                    tbody
+                        each assetIssue in assetIssues
+                            tr
+                                td= assetIssue.id
+                                td= employees.filter(employee => employee.id=== assetIssue.employeeId)[0].firstName
+                                td= employees.filter(employee => employee.id=== assetIssue.employeeId)[0].lastName
+                                td= employees.filter(employee => employee.id=== assetIssue.employeeId)[0].department
+                                td= assets.filter(asset => asset.id=== assetIssue.assetId)[0].serialNumber
+                                td= assets.filter(asset => asset.id=== assetIssue.assetId)[0].model
+                                td= new Date(assetIssue.issueDate).toISOString().split('T')[0]
+                                td= new Date(assetIssue.returnDate).toISOString().split('T')[0]
+                                td= assetIssue.status
+                                td(style='display:flex; gap:10px')
+                                    buttom(type="button", class="btn btn-dark view-btn", 
+                                        data-data=assetIssue,
+                                        data-assetid=`${assets.filter(asset => asset.id=== assetIssue.assetId)[0]["id"]}`,
+                                        data-serialnumber=`${assets.filter(asset => asset.id=== assetIssue.assetId)[0]["serialNumber"]}`,
+                                        data-make=`${assets.filter(asset => asset.id=== assetIssue.assetId)[0]["make"]}`,
+                                        data-model=`${assets.filter(asset => asset.id=== assetIssue.assetId)[0]["model"]}`,
+                                        data-returndate=`${new Date(assetIssue.returnDate).toISOString().split('T')[0]}`,
+                                        data-employee=`${employees.filter(employee => employee.id=== assetIssue.employeeId)[0].firstName+" "+employees.filter(employee => employee.id=== assetIssue.employeeId)[0].lastName}`, data-bs-toggle="modal", data-bs-target="#exampleModal", data-department=`${employees.filter(employee => employee.id=== assetIssue.employeeId)[0].department}`) View
+                    tfooter
+                        tr 
+                            th ID
+                            th Employee First Name
+                            th Employee Last Name
+                            th Employee Department
+                            th Asset Serial Number
+                            th Asset Model
+                            th Issue Date
+                            th Retun Date
+                            th Status
+                            th Actions
+
+        div(class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true")
+            div(class="modal-dialog modal-dialog-centered")
+                div(class="modal-content")
+                    div(class="modal-header")
+                        h2(class="modal-title fs-5" id="exampleModalLabel") Return Status
+                        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+                    .modal-body
+                        .d-flex.justify-content-between.p-2
+                            p#employeeDetails
+                    
+                    div(class="modal-footer")
+                        button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Close 
+
+
+script.
+    $(document).ready(function() {
+        $('#assetIssueTable').DataTable();
+
+        $('.view-btn').on('click', function() {
+            const details = `
+                <strong>Return ID:</strong> ${$(this).data('data')['id']}<br>
+                <strong>Employee ID:</strong> ${$(this).data('data')['employeeId']}<br>
+                <strong>Employee Name:</strong> ${$(this).data('employee')}<br>
+                <strong>Department:</strong> ${$(this).data('department')}<br>
+                <strong>Asset ID:</strong> ${$(this).data('assetid')}<br>
+                <strong>Serial Number:</strong> ${$(this).data('serialnumber')}<br>
+                <strong>Make:</strong> ${$(this).data('make')}<br>
+                <strong>Model:</strong> ${$(this).data('model')}<br>
+                <strong>Return date:</strong> ${$(this).data('returndate')}<br>
+                <strong>Return notes:</strong> ${$(this).data('data')['notes']}<br>
+            `;
+            $('#employeeDetails').html(details);
+        }); 
+    });
+
+include ../components/footer.pug
